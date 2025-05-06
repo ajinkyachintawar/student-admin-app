@@ -74,4 +74,7 @@ This project is deployed on Netlify. To deploy your own:
 ### 👨‍💻 Author
 #### Ajinkya Chintawar
 
+[LinkedIn](https://www.linkedin.com/in/ajinkya-chintawar) | [Portfolio](https://ajinkya-analytics.netlify.app/)
+
+
 

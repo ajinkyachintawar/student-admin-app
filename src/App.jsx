@@ -1,36 +1,60 @@
-import { useState } from 'react';
-import './styles.css'
+import { useEffect, useState } from 'react';
+import { supabase } from './supabaseClient';
+
 function App() {
   const [students, setStudents] = useState([]);
   const [newStudent, setNewStudent] = useState({ name: '', age: '', course: '' });
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+
+  // Fetch on load
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  const fetchStudents = async () => {
+    const { data, error } = await supabase
+      .from('students')
+      .select('*')
+      .order('id', { ascending: true });
+
+    if (error) console.error(error);
+    else setStudents(data);
+  };
 
   const handleInputChange = (e) => {
     setNewStudent({ ...newStudent, [e.target.name]: e.target.value });
   };
 
-  const handleAddOrUpdate = () => {
-    if (editingIndex !== null) {
-      const updated = [...students];
-      updated[editingIndex] = newStudent;
-      setStudents(updated);
-      setEditingIndex(null);
+  const handleAddOrUpdate = async () => {
+    if (!newStudent.name || !newStudent.age || !newStudent.course) return;
+
+    if (editingId) {
+      const { error } = await supabase
+        .from('students')
+        .update(newStudent)
+        .eq('id', editingId);
+      if (error) console.error(error);
     } else {
-      setStudents([...students, newStudent]);
+      const { error } = await supabase
+        .from('students')
+        .insert([newStudent]);
+      if (error) console.error(error);
     }
+
     setNewStudent({ name: '', age: '', course: '' });
+    setEditingId(null);
+    fetchStudents();
   };
 
-  const handleEdit = (index) => {
-    setNewStudent(students[index]);
-    setEditingIndex(index);
+  const handleEdit = (student) => {
+    setNewStudent({ name: student.name, age: student.age, course: student.course });
+    setEditingId(student.id);
   };
 
-  const handleDelete = (index) => {
-    const updated = students.filter((_, i) => i !== index);
-    setStudents(updated);
-    setNewStudent({ name: '', age: '', course: '' });
-    setEditingIndex(null);
+  const handleDelete = async (id) => {
+    const { error } = await supabase.from('students').delete().eq('id', id);
+    if (error) console.error(error);
+    else fetchStudents();
   };
 
   return (
@@ -39,7 +63,7 @@ function App() {
 
       <div className="card">
         <div className="card-header">
-          {editingIndex !== null ? 'Edit Student' : 'Add Student'}
+          {editingId ? 'Edit Student' : 'Add Student'}
         </div>
         <input
           className="input"
@@ -51,6 +75,7 @@ function App() {
         <input
           className="input"
           name="age"
+          type="number"
           placeholder="Age"
           value={newStudent.age}
           onChange={handleInputChange}
@@ -63,18 +88,18 @@ function App() {
           onChange={handleInputChange}
         />
         <button className="button" onClick={handleAddOrUpdate}>
-          {editingIndex !== null ? 'Update' : 'Add'}
+          {editingId ? 'Update' : 'Add'}
         </button>
       </div>
 
-      {students.map((student, index) => (
-        <div className="card" key={index}>
+      {students.map((student) => (
+        <div className="card" key={student.id}>
           <div><strong>Name:</strong> {student.name}</div>
           <div><strong>Age:</strong> {student.age}</div>
           <div><strong>Course:</strong> {student.course}</div>
           <div style={{ marginTop: '10px' }}>
-            <button className="button" onClick={() => handleEdit(index)}>Edit</button>
-            <button className="button delete" onClick={() => handleDelete(index)}>Delete</button>
+            <button className="button" onClick={() => handleEdit(student)}>Edit</button>
+            <button className="button delete" onClick={() => handleDelete(student.id)}>Delete</button>
           </div>
         </div>
       ))}

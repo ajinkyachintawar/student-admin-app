@@ -34,3 +34,44 @@ A simple web-based Student Administration system built using **React**, **Supaba
 ```bash
 git clone https://github.com/ajinkyachintawar/student-admin-app.git
 cd student-admin-app
+```
+### 2. Install dependencies
+
+```bash
+npm install
+```
+### 3. Create .env file
+Create a .env file in the root folder and add:
+
+```bash
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
+### 4. Run the app locally
+
+```bash
+npm run dev
+```
+### 🧩 Database Schema
+| Column | Type    | Description                  |
+| ------ | ------- | ---------------------------- |
+| id     | bigint  | Primary key (auto-increment) |
+| name   | text    | Student name                 |
+| age    | integer | Student age                  |
+| course | text    | Course enrolled              |
+
+### 📦 Deployment
+This project is deployed on Netlify. To deploy your own:
+
+1. **Push the project to GitHub.**
+2. **Connect your GitHub repository to Netlify.**
+3. **Set environment variables in the Netlify dashboard:**
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+4. **Build command:** `npm run build`
+5. **Publish directory:** `dist`
+
+### 👨‍💻 Author
+#### Ajinkya Chintawar
+
+

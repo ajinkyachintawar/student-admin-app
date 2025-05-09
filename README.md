@@ -72,7 +72,7 @@ This project is deployed on Netlify. To deploy your own:
 5. **Publish directory:** `dist`
 
 ### 👨‍💻 Author
-#### Ajinkya Chintawar
+#### Ajinkya Chintaw
 
 [LinkedIn](https://www.linkedin.com/in/ajinkya-chintawar) | [Portfolio](https://ajinkya-analytics.netlify.app/)
 
